@@ -19,9 +19,9 @@ test_that("which_invalid", {
     file.create(f2)
     expect_equal(which_invalid(job), c(F, F, T, T))
 
-    file.create(f3)
-    expect_equal(which_invalid(job), c(F, F, F, T))
-
     file.create(f4)
+    expect_equal(which_invalid(job), c(F, F, T, T))
+
+    file.create(f3)
     expect_equal(which_invalid(job), c(F, F, F, F))
 })
