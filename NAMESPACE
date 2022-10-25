@@ -3,4 +3,5 @@
 export(action)
 export(is_action)
 export(is_job)
+export(is_obsolete)
 import(assertthat)
