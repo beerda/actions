@@ -4,13 +4,15 @@
 #' @export
 action <- function(targets,
                    depends = NULL,
-                   params = NULL) {
+                   fun = function() { },
+                   args = NULL) {
     assert_that(is.character(targets))
     assert_that(is.null(depends) || is.character(depends))
-    assert_that(is.null(params) || is.list(params))
+    assert_that(is.null(args) || is.list(args))
 
     structure(list(targets = targets,
                    depends = depends,
-                   params = params),
+                   fun = fun,
+                   args = args),
               class = 'action')
 }
