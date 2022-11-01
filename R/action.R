@@ -5,7 +5,8 @@
 action <- function(targets,
                    depends = NULL,
                    fun = function() { },
-                   args = NULL) {
+                   args = NULL,
+                   label = paste(targets, collapse = ', ')) {
     assert_that(is.character(targets))
     assert_that(is.null(depends) || is.character(depends))
     assert_that(is.null(args) || is.list(args))
@@ -13,6 +14,7 @@ action <- function(targets,
     structure(list(targets = targets,
                    depends = depends,
                    fun = fun,
-                   args = args),
+                   args = args,
+                   label = label),
               class = 'action')
 }
