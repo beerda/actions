@@ -10,13 +10,20 @@ run <- function(action) {
         nonexistent <- action$depends[nonexistent]
         if (length(nonexistent) > 0) {
             nonexistent <- paste(nonexistent, sep = ', ')
-            cli_abort('Prerequisite files do not exist: {nonexistent}')
+            cli_warn('Prerequisite files do not exist: {nonexistent}')
         }
     }
 
+    label <- paste(action$targets, sep = ', ')
     pretime <- file.mtime(action$targets)
 
-    cli_inform('Running action')
+    res <- try(silent = FALSE, {
+        do.call(action$fun, action$args)
+    })
+
+    if (inherits(res, 'try-error')) {
+        return(FALSE)
+    }
 
     posttime <- file.mtime(action$targets)
     updated <- (is.na(pretime) & !is.na(posttime)) |
@@ -24,6 +31,8 @@ run <- function(action) {
 
     if (!all(updated)) {
         nonupdated <- action$targets[!updated]
-        cli_abort('Targets not updated: {nonupdated}')
+        cli_warn('Targets not updated: {nonupdated}')
     }
+
+    return(TRUE)
 }
