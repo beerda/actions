@@ -2,6 +2,7 @@
 
 export(action)
 export(dependants)
+export(failures_of_failed_prerequisites)
 export(failures_of_missing_actions)
 export(is_action)
 export(is_job)
