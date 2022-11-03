@@ -3,6 +3,6 @@
 #' @author Michal Burda
 #' @export
 is_worker <- function(worker) {
-    is_list(worker) &&
+    is.list(worker) &&
         inherits(worker, 'worker')
 }
