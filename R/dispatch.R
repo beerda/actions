@@ -18,15 +18,14 @@ dispatch <- function(job, ids) {
                         args = list(action = action),
                         error = 'error')
 
-        worker <- list(id = id,
-                       action = action,
-                       process = process)
+        w <- list(id = id,
+                  action = action,
+                  process = process,
+                  rstudio_job = jobAdd(name = action$label,
+                                       status = 'running',
+                                       actions = list(stop = .stop_button(process))))
 
-        worker$rstudio_job <- jobAdd(name = action$label,
-                                     status = 'running',
-                                     actions = list(stop = .stop_button(process)))
-
-        worker
+        structure(w, class = 'worker')
     })
 }
 
