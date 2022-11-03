@@ -19,7 +19,7 @@ build <- function(job, processes = 1, timeout = 1000) {
 
     while (any(runnable_actions) || any(alive_workers)) {
         start_ids <- .which_start(job, processes - length(workers), runnable_actions)
-        workers <- c(workers, .dispatch(job, start_ids))
+        workers <- c(workers, dispatch(job, start_ids))
 
         .poll(workers, timeout)
         .print(workers, FALSE)
@@ -53,21 +53,6 @@ build <- function(job, processes = 1, timeout = 1000) {
     running_actions <- runnable_actions & (cumsum(runnable_actions) <= processes)
 
     seq_along(job)[running_actions]
-}
-
-
-.dispatch <- function(job, start_ids) {
-    f <- function(action) {
-        library(actions)
-        run(action)
-    }
-
-    lapply(start_ids, function(id) {
-        action <- job[[id]]
-        list(id = id,
-             action = action,
-             process = r_bg(f, args = list(action = action), error = 'error'))
-    })
 }
 
 
