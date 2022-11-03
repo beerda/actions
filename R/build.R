@@ -28,7 +28,9 @@ build <- function(job, processes = 1, timeout = 100) {
 
             failed_actions <- unlist(props(job, 'failed'))
             finished_actions <- unlist(props(job, 'finished'))
-            runnable_actions <- which_runnable(job, res$running_actions | failed_actions) & !finished_actions
+
+            runnable_actions <- which_runnable(job, res$running_actions | failed_actions)
+            runnable_actions <- runnable_actions & !finished_actions
         }
 
     }
