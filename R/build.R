@@ -18,7 +18,6 @@ build <- function(job, processes = 1, timeout = 100) {
     while (any(runnable_actions) || any(alive_workers)) {
         workers <- dispatch(workers, job, runnable_actions)
         poll(workers, timeout)
-        show_output(workers)
 
         alive_workers <- .alive(workers)
 
