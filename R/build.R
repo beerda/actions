@@ -8,16 +8,11 @@ build <- function(job, processes = 1, timeout = 1000) {
     assert_that(is_job(job))
     assert_that(is.count(processes))
 
-    action_failures <- failures_of_missing_actions(job)
-    failed_actions <- !sapply(action_failures, is.null)
+    job <- init_build(job)
+    job <- mark_missing_deps(job)
+    job <- mark_failed_deps(job)
 
-    prereq_failures <- failures_of_failed_prerequisites(job, failed_actions)
-    action_failures <- merge_failures(action_failures, prereq_failures)
-    failed_actions <- !sapply(action_failures, is.null)
-
-    finished_actions <- rep(FALSE, length(job))
-    finished_actions[failed_actions] <- TRUE
-
+    finished_actions <- unlist(props(job, 'finished'))
     runnable_actions <- which_runnable(job) & !finished_actions
     workers <- list()
     alive_workers <- NULL
@@ -32,29 +27,30 @@ build <- function(job, processes = 1, timeout = 1000) {
 
         alive_workers <- .alive(workers)
         if (!all(alive_workers)) {
-            failed_ids <- .which_failed(workers)
-            action_failures[failed_ids] <- 'Execution failed'
-            failed_actions <- !sapply(action_failures, is.null)
-            prereq_failures <- failures_of_failed_prerequisites(job, failed_actions)
-            action_failures <- merge_failures(action_failures, prereq_failures)
-            failed_actions <- !sapply(action_failures, is.null)
+            succeeded_ids <- .which_succeeded(workers)
+            props(job, 'status')[succeeded_ids] <- 'Built successfully'
+            props(job, 'succeeded')[succeeded_ids] <- TRUE
+            props(job, 'finished')[succeeded_ids] <- TRUE
 
-            finished_ids <- .which_finished(workers)
-            finished_actions[finished_ids] <- TRUE
+            failed_ids <- .which_failed(workers)
+            props(job, 'status')[failed_ids] <- 'Execution failed'
+            props(job, 'failed')[failed_ids] <- TRUE
+            props(job, 'finished')[failed_ids] <- TRUE
+            job <- mark_failed_deps(job)
 
             workers <- workers[alive_workers]
 
             alive_ids <- .which_alive(workers)
             running_actions <- rep_len(FALSE, length(job))
             running_actions[alive_ids] <- TRUE
+            failed_actions <- unlist(props(job, 'failed'))
+            finished_actions <- unlist(props(job, 'finished'))
 
-            runnable_actions <- which_runnable(job, running_actions | failed_actions ) & !finished_actions
+            runnable_actions <- which_runnable(job, running_actions | failed_actions) & !finished_actions
         }
     }
 
-    action_failures[finished_actions & !failed_actions] <- 'Built successfully'
-
-    print(action_failures)
+    print(props(job, 'status'))
 }
 
 
@@ -114,16 +110,20 @@ build <- function(job, processes = 1, timeout = 1000) {
 }
 
 
-.which_finished <- function(workers) {
-    alive <- .alive(workers)
-    vapply(workers[!alive], function(w) w$id, numeric(1))
-}
-
-
 .which_failed <- function(workers) {
     alive <- .alive(workers)
     res <- vapply(workers[!alive],
                   function(w) ifelse(w$process$get_result(), NA, w$id),
+                  numeric(1))
+
+    na.omit(res)
+}
+
+
+.which_succeeded <- function(workers) {
+    alive <- .alive(workers)
+    res <- vapply(workers[!alive],
+                  function(w) ifelse(w$process$get_result(), w$id, NA),
                   numeric(1))
 
     na.omit(res)
