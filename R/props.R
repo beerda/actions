@@ -17,10 +17,13 @@ props <- function(job, name) {
 
     value <- rep_len(value, length(job))
 
-    lapply(seq_along(job), function(i) {
+    res <- lapply(seq_along(job), function(i) {
         a <- job[[i]]
         a[[name]] <- value[[i]]
 
         a
     })
+    attr(res, 'init_build') <- attr(job, 'init_build')
+
+    res
 }

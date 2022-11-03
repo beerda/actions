@@ -7,7 +7,7 @@ mark_missing_deps <- function(job) {
 
     miss <- missing_deps(job)
 
-    lapply(seq_along(job), function(i) {
+    res <- lapply(seq_along(job), function(i) {
         a <- job[[i]]
         m <- miss[[i]]
         if (length(m) > 0) {
@@ -18,4 +18,7 @@ mark_missing_deps <- function(job) {
 
         a
     })
+    attr(res, 'init_build') <- TRUE
+
+    res
 }
