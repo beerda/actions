@@ -28,14 +28,9 @@ build <- function(job, processes = 1, timeout = 1000) {
         alive_workers <- .alive(workers)
         if (!all(alive_workers)) {
             succeeded_ids <- .which_succeeded(workers)
-            props(job, 'status')[succeeded_ids] <- 'Built successfully'
-            props(job, 'succeeded')[succeeded_ids] <- TRUE
-            props(job, 'finished')[succeeded_ids] <- TRUE
-
             failed_ids <- .which_failed(workers)
-            props(job, 'status')[failed_ids] <- 'Execution failed'
-            props(job, 'failed')[failed_ids] <- TRUE
-            props(job, 'finished')[failed_ids] <- TRUE
+            job <- mark_finished(job, succeeded_ids, TRUE)
+            job <- mark_finished(job, failed_ids, FALSE)
             job <- mark_failed_deps(job)
 
             workers <- workers[alive_workers]
