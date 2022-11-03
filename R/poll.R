@@ -17,6 +17,30 @@ poll <- function(workers, timeout) {
         text <- .format_output(w$action$label, 'ERR', text)
         jobAddOutput(w$rstudio_job, text, TRUE)
     }
+
+    alive <- vapply(workers, function(w) w$process$is_alive(), logical(1))
+
+    succeeded_ids <- na.omit(
+        vapply(workers[!alive],
+               function(w) ifelse(w$process$get_result(), w$id, NA),
+               numeric(1)))
+
+    failed_ids <- na.omit(
+        vapply(workers[!alive],
+               function(w) ifelse(w$process$get_result(), NA, w$id),
+               numeric(1)))
+
+    running_ids <- vapply(workers[alive],
+                          function(w) w$id,
+                          numeric(1))
+
+    running_actions <- rep_len(FALSE, length(job))
+    running_actions[running_ids] <- TRUE
+
+    list(alive_workers = alive,
+         succeeded_ids = succeeded_ids,
+         failed_ids = failed_ids,
+         running_actions = running_actions)
 }
 
 
