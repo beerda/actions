@@ -1,13 +1,13 @@
 test_that("props", {
     a1 <- action('a', 'b')
     a2 <- action('b', 'c')
-    job <- list(a1, a2)
+    j <- job(a1, a2)
 
-    expect_equal(props(job, 'targets'),
+    expect_equal(props(j, 'targets'),
                  list('a', 'b'))
 
-    props(job, 'targets') <- list(c('a', 'x'), 'y')
+    props(j, 'targets') <- list(c('a', 'x'), 'y')
 
-    expect_equal(props(job, 'targets'),
+    expect_equal(props(j, 'targets'),
                  list(c('a', 'x'), 'y'))
 })

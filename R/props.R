@@ -23,6 +23,7 @@ props <- function(job, name) {
 
         a
     })
+    attr(res, 'class') <- 'job'
     attr(res, 'init_build') <- attr(job, 'init_build')
 
     res

@@ -13,6 +13,7 @@ init_build <- function(job) {
 
         a
     })
+    attr(res, 'class') <- 'job'
     attr(res, 'init_build') <- TRUE
 
     res

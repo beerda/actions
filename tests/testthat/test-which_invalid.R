@@ -9,23 +9,23 @@ test_that("which_invalid", {
     a3 <- action(f3, f2)
     a4 <- action(f4, f3)
 
-    job <- list(a1, a2, a3, a4)
+    j <- job(a1, a2, a3, a4)
 
-    expect_equal(which_invalid(job), c(T, T, T, T))
+    expect_equal(which_invalid(j), c(T, T, T, T))
 
     file.create(f1)
     Sys.setFileTime(f1, "1990-01-01")
-    expect_equal(which_invalid(job), c(F, T, T, T))
+    expect_equal(which_invalid(j), c(F, T, T, T))
 
     file.create(f2)
     Sys.setFileTime(f2, "1990-01-02")
-    expect_equal(which_invalid(job), c(F, F, T, T))
+    expect_equal(which_invalid(j), c(F, F, T, T))
 
     file.create(f4)
     Sys.setFileTime(f4, "1990-01-04")
-    expect_equal(which_invalid(job), c(F, F, T, T))
+    expect_equal(which_invalid(j), c(F, F, T, T))
 
     file.create(f3)
     Sys.setFileTime(f3, "1990-01-03")
-    expect_equal(which_invalid(job), c(F, F, F, F))
+    expect_equal(which_invalid(j), c(F, F, F, F))
 })

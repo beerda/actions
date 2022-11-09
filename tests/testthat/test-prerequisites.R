@@ -3,9 +3,9 @@ test_that("prerequisites", {
     a2 <- action(targets = c('c', 'd'))
     a3 <- action(targets = c('e', 'f'), depends = c('a'))
     a4 <- action(targets = c('g', 'h'), depends = c('a', 'd', 'e'))
-    job <- list(a1, a2, a3, a4)
+    j <- job(a1, a2, a3, a4)
 
-    res <- prerequisites(job)
+    res <- prerequisites(j)
     expect_true(is.matrix(res))
     expect_true(is.numeric(res))
 
