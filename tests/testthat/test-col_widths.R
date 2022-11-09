@@ -1,0 +1,13 @@
+test_that("col_widths", {
+    expect_equal(col_widths(c(3, 3, 3),   1, 5, 20), c(3, 3, 3))
+    expect_equal(col_widths(c(20, 3, 19), 1, 5, 10), c(5, 3, 5))
+    expect_equal(col_widths(c(20, 3, 19), 1, 5, 15), c(5, 3, 5))
+    expect_equal(col_widths(c(20, 3, 19), 1, 5, 16), c(6, 3, 5))
+    expect_equal(col_widths(c(20, 3, 19), 1, 5, 17), c(6, 3, 6))
+    expect_equal(col_widths(c(20, 3, 19), 1, 5, 18), c(7, 3, 6))
+    expect_equal(col_widths(c(20, 3, 19), 1, 5, 19), c(7, 3, 7))
+    expect_equal(col_widths(c(20, 3, 19), 1, 5, 43), c(19, 3, 19))
+    expect_equal(col_widths(c(20, 3, 19), 1, 5, 44), c(20, 3, 19))
+    expect_equal(col_widths(c(20, 3, 19), 1, 5, 45), c(20, 3, 19))
+    expect_equal(col_widths(c(20, 3, 19), 1, 5, 99), c(20, 3, 19))
+})
