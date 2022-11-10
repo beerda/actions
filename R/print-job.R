@@ -10,17 +10,22 @@ print.job <- function(job, ...) {
     script <- .format(job, 'depends', function(d) d[length(d)])
     targets <- .format(job, 'targets', identity)
 
-    sizes <- list(no, deps, script, targets)
-    sizes <- lapply(sizes, nchar)
-    sizes <- unlist(lapply(sizes, max))
-    widths <- col_widths(sizes, 3, 12, console_width())
+    obsolete <- Vectorize(is_obsolete)(job)
+    cols <- prepare_table(list(no, deps, script, targets),
+                          min_size = 12,
+                          total_size = console_width() - 3 * 3)
 
-    deps <- .pad(deps, widths[2])
-    script <- .pad(script, widths[3])
-    targets <- .pad(targets, widths[4])
 
-    cat(paste0('[', no, '] ', deps, ' ▶ ', script, ' ▶ ', targets, '\n',
-               sep = '', collapse = ''))
+    for (i in seq_along(job)) {
+        color <- if (obsolete[i]) col_br_white else col_grey
+
+        cat(col_br_white('[', cols[[1]][i], '] '))
+        cat(color(cols[[2]][i]))
+        cat(col_br_white(' ▶ '))
+        cat(color(cols[[3]][i]))
+        cat(col_br_white(' ▶ '))
+        cat(color(cols[[4]][i], '\n'))
+    }
 }
 
 
@@ -30,11 +35,4 @@ print.job <- function(job, ...) {
     vapply(prop,
            function(d) paste0(fun(d), collapse = '|'),
            character(1))
-}
-
-
-.pad <- function(what, limit) {
-    res <- str_trunc(what, limit, ellipsis = '…')
-
-    str_pad(res, limit)
 }
