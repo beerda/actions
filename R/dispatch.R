@@ -22,24 +22,29 @@ dispatch <- function(workers, job, what) {
 
         process <- r_bg(f,
                         args = list(action = action),
+                        stderr = '2>&1',
+                        supervise = TRUE,
                         error = 'error')
+
+        rstudio_job <- NULL
+        #-- rstudio binding:   rstudio_job <- jobAdd(name = action$label,
+                              #status = 'running',
+                              #actions = list(stop = .stop_button(process)),
+                              #running = TRUE,
+                              #autoRemove = TRUE,
+                              #show = TRUE)
 
         w <- list(id = id,
                   action = action,
                   process = process,
-                  rstudio_job = jobAdd(name = action$label,
-                                       status = 'running',
-                                       actions = list(stop = .stop_button(process)),
-                                       running = TRUE,
-                                       autoRemove = TRUE,
-                                       show = TRUE))
+                  new = TRUE,
+                  nonexistent_deps = nonexistent_deps(action),
+                  rstudio_job = rstudio_job)
 
         structure(w, class = 'worker')
     })
 
-    structure(c(workers, fresh),
-              class = 'working_group',
-              size = size)
+    create_working_group(size, c(workers, fresh))
 }
 
 
