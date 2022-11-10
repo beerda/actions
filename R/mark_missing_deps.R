@@ -11,7 +11,7 @@ mark_missing_deps <- function(job) {
         a <- job[[i]]
         m <- miss[[i]]
         if (length(m) > 0) {
-            a$status <- paste0('No action to build: ', paste0(m, collapse = ', '))
+            a$status <- paste0('no action to build: ', paste0(m, collapse = ', '))
             a$failed <- TRUE
             a$finished <- TRUE
         }

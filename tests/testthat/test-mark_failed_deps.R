@@ -9,10 +9,10 @@ test_that("mark_failed_deps", {
     j2 <- mark_failed_deps(j)
 
     expect_equal(props(j2, 'status'),
-                 list('Not executed',
-                      'Not executed',
-                      'Not executed',
-                      'Not executed'))
+                 list('not executed',
+                      'not executed',
+                      'not executed',
+                      'not executed'))
     expect_equal(props(j2, 'failed'),
                  rep_len(list(FALSE), length(j2)))
     expect_equal(props(j2, 'finished'),
@@ -23,10 +23,10 @@ test_that("mark_failed_deps", {
     j2 <- mark_failed_deps(j)
 
     expect_equal(props(j2, 'status'),
-                 list('Not executed',
-                      'Not executed',
-                      'Not executed',
-                      'Not executed'))
+                 list('not executed',
+                      'not executed',
+                      'not executed',
+                      'not executed'))
     expect_equal(props(j2, 'failed'),
                  list(F, F, F, T))
     expect_equal(props(j2, 'finished'),
@@ -37,10 +37,10 @@ test_that("mark_failed_deps", {
     j2 <- mark_failed_deps(j)
 
     expect_equal(props(j2, 'status'),
-                 list('Not executed',
-                      'Failed prerequisite action',
-                      'Failed prerequisite action',
-                      'Failed prerequisite action'))
+                 list('not executed',
+                      'failed prerequisite action',
+                      'failed prerequisite action',
+                      'failed prerequisite action'))
     expect_equal(props(j2, 'failed'),
                  list(T, T, T, T))
     expect_equal(props(j2, 'finished'),
@@ -51,10 +51,10 @@ test_that("mark_failed_deps", {
     j2 <- mark_failed_deps(j)
 
     expect_equal(props(j2, 'status'),
-                 list('Not executed',
-                      'Not executed',
-                      'Failed prerequisite action',
-                      'Failed prerequisite action'))
+                 list('not executed',
+                      'not executed',
+                      'failed prerequisite action',
+                      'failed prerequisite action'))
     expect_equal(props(j2, 'failed'),
                  list(T, T, T, T))
     expect_equal(props(j2, 'finished'),

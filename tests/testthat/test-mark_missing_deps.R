@@ -12,10 +12,10 @@ test_that("mark_missing_deps", {
     j <- mark_missing_deps(j)
 
     expect_equal(props(j, 'status'),
-                 list('Not executed',
-                      'No action to build: x',
-                      'Not executed',
-                      'No action to build: y, z'))
+                 list('not executed',
+                      'no action to build: x',
+                      'not executed',
+                      'no action to build: y, z'))
 
     expect_equal(props(j, 'failed'),
                  list(F, T, F, T))
