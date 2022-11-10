@@ -2,8 +2,8 @@
 #' @return
 #' @author Michal Burda
 #' @export
-print_status <- function(action,
-                         type = c('depends', 'targets')) {
+print_action_status <- function(action,
+                                type = c('depends', 'targets')) {
     assert_that(is_action(action))
     assert_that(is.string(type))
 

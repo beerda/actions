@@ -9,13 +9,21 @@ run <- function(action) {
     res <- list(label = action$label,
                 nonexistent_deps = nonexistent_deps(action))
 
-    cat(rule(left = 'Build started', right = action$label, line = 2), '\n')
-    print_status(action, 'depends')
+    cat(rule(left = paste0(style_bold('Action started'), ' (', Sys.time(), ')'),
+             right = action$label,
+             line = 1,
+             col = col_white))
+    print_action_status(action, 'depends')
     cat('\n')
 
+    start_time <- Sys.time()
     res$value <- try(silent = FALSE, {
         do.call(action$fun, action$args)
     })
+    end_time <- Sys.time()
+    diff_time <- as.numeric(end_time - start_time)
+    diff_time <- round(diff_time, 1)
+
 
     if (inherits(res$value, 'try-error')) {
         res$ok <- FALSE
@@ -25,8 +33,11 @@ run <- function(action) {
         res$nonupdated_targets <- nonupdated_targets(action, pre_time)
     }
 
-    print_status(action, 'targets')
-    cat(rule(left = 'Build finished', right = action$label, line = 2), '\n')
+    print_action_status(action, 'targets')
+    cat(rule(left = paste0(style_bold('Action finished'), ' (', diff_time, ' s)'),
+             right = action$label,
+             line = 1,
+             col = col_white))
 
     return(res)
 }
