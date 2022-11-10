@@ -22,7 +22,9 @@ dispatch <- function(workers, job, what) {
 
         process <- r_bg(f,
                         args = list(action = action),
-                        stderr = '2>&1',
+                        stdout = NULL,
+                        stderr = NULL,
+                        pty = TRUE,
                         supervise = TRUE,
                         error = 'error')
 

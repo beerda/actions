@@ -8,25 +8,31 @@ print_status <- function(action,
     assert_that(is.string(type))
 
     type <- match.arg(type)
-    icon_map <- c(`newer` = '• ', `older` = '  ', `non-existent` = '✖ ')
+    icon_map <- list(`newer` = '• ', `older` = '  ', `non-existent` = '✖ ')
+    color_map <- list(`newer` = col_br_green, `older` = col_br_white, `non-existent` = col_br_red)
 
+    res <- NULL
     if (type == 'depends') {
         item <- action$depends
         state <- status(action, 'depends')
-        cat('── Dependencies ──\n')
+        res <- col_white('── Dependencies ──\n')
     } else {
         item <- action$targets
         state <- status(action, 'targets')
-        cat('── Targets ──\n')
+        res <- col_white('── Targets ──\n')
     }
 
-    tbl <- prepare_table(list(item, state), 12, console_width() - 3)
-
+    tbl <- prepare_table(list(item, state), 12, console_width() - 5)
     for (i in seq_along(item)) {
-        cat(icon_map[state[i]])
-        cat(col_br_red(tbl[[1]][i]))
-        cat(' ')
-        cat(col_br_white(tbl[[2]][i]))
-        cat('\n')
+        color <- color_map[[state[i]]]
+        icon <- icon_map[[state[i]]]
+        res <- c(res,
+                 color(icon),
+                 color(tbl[[1]][i]),
+                 col_white(' - '),
+                 col_white(tbl[[2]][i]),
+                 '\n')
     }
+
+    cat(paste0(res, collapse = ''))
 }
