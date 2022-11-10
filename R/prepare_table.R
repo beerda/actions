@@ -10,7 +10,7 @@ prepare_table <- function(cols, min_size = 1, total_size = console_width()) {
     for (i in seq_along(cols)) {
         v <- cols[[i]]
         v <- str_trunc(v, widths[i], ellipsis = '…')
-        v <- str_pad(v, widths[i])
+        v <- str_pad(v, widths[i], side = 'right')
         cols[[i]] <- v
     }
 
