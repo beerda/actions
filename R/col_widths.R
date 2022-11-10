@@ -1,8 +1,7 @@
 #'
 #' @return
 #' @author Michal Burda
-col_widths <- function(cols, sep, minimum, total) {
-    total <- total - sep * (length(cols) - 1)
+col_widths <- function(cols, minimum, total) {
     res <- pmin(cols, minimum)
 
     while (sum(res) < total) {
